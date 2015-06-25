@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{496E30ED-297A-414B-994F-DDC6CD41C4A4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>YoukaiKingdom.Logic</RootNamespace>
+    <AssemblyName>YoukaiKingdom.Logic</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GameEngine.cs" />
+    <Compile Include="Interfaces\IArmor.cs" />
+    <Compile Include="Interfaces\ICharacter.cs" />
+    <Compile Include="Interfaces\IItem.cs" />
+    <Compile Include="Interfaces\IOffhand.cs" />
+    <Compile Include="Interfaces\ISpell.cs" />
+    <Compile Include="Interfaces\IWeapon.cs" />
+    <Compile Include="Models\Characters\AttackType.cs" />
+    <Compile Include="Models\Characters\Character.cs" />
+    <Compile Include="Models\Characters\Heroes\Hero.cs" />
+    <Compile Include="Models\Characters\Heroes\CharacterType.cs" />
+    <Compile Include="Models\Characters\Heroes\Monk.cs" />
+    <Compile Include="Models\Characters\Heroes\Ninja.cs" />
+    <Compile Include="Models\Characters\Location.cs" />
+    <Compile Include="Models\Characters\NPCs\Npc.cs" />
+    <Compile Include="Models\Characters\NPCs\NpcMage.cs" />
+    <Compile Include="Models\Characters\NPCs\NpcRogue.cs" />
+    <Compile Include="Models\Characters\NPCs\NpcWarrior.cs" />
+    <Compile Include="Models\Characters\Heroes\Samurai.cs" />
+    <Compile Include="Models\Characters\Spells\Fireball.cs" />
+    <Compile Include="Models\Characters\Spells\Spell.cs" />
+    <Compile Include="Models\Characters\Spells\ТheЕqualizer.cs" />
+    <Compile Include="Models\Inventory\Inventory.cs" />
+    <Compile Include="Models\Inventory\Loot.cs" />
+    <Compile Include="Models\Items\Armors\Armor.cs" />
+    <Compile Include="Models\Items\Armors\BodyArmor.cs" />
+    <Compile Include="Models\Items\Armors\Boots.cs" />
+    <Compile Include="Models\Items\Armors\Gloves.cs" />
+    <Compile Include="Models\Items\Armors\Helmet.cs" />
+    <Compile Include="Models\Items\Armors\Shield.cs" />
+    <Compile Include="Models\Items\BonusAttributes\BonusAttributes.cs" />
+    <Compile Include="Interfaces\IBonusAttributes.cs" />
+    <Compile Include="Models\Items\Potions\HealingPotion.cs" />
+    <Compile Include="Models\Items\Potions\ManaPotion.cs" />
+    <Compile Include="Models\Items\Potions\Potion.cs" />
+    <Compile Include="Models\Items\Weapons\OneHanded\OneHandedDagger.cs" />
+    <Compile Include="Models\Items\Weapons\OneHanded\OneHandedSword.cs" />
+    <Compile Include="Models\Items\Item.cs" />
+    <Compile Include="Models\Items\Weapons\OneHanded\OneHandedWeapon.cs" />
+    <Compile Include="Models\Items\Weapons\TwoHanded\TwoHandedAxe.cs" />
+    <Compile Include="Models\Items\Weapons\TwoHanded\TwoHandedStaff.cs" />
+    <Compile Include="Models\Items\Weapons\TwoHanded\TwoHandedSword.cs" />
+    <Compile Include="Models\Items\Weapons\TwoHanded\TwoHandedWeapon.cs" />
+    <Compile Include="Models\Items\Weapons\Weapon.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
