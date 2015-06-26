@@ -22,6 +22,7 @@
             : base(DefaultLevel, name, health, mana, damage, armor, attackSpeed, DefaultHitRange, DefaultLocation)
         {
             this.Inventory = new Inventory();
+            this.Ready = true;
         }
 
         public Inventory Inventory { get; set; }
@@ -51,7 +52,7 @@
         }
 
         #endregion Apply stats
-
+        public bool Ready { get; set; }
         #region Remove stats
 
         private void RemoveDamagePoints(int weaponDamage)
@@ -66,7 +67,11 @@
 
         private void RemoveHealthPoints(int damage)
         {
-            this.Health -= damage;
+            if (this.Ready)
+            {
+                this.Health -= damage;
+            }
+
             if (this.Health < 0)
             {
                 this.Health = 0;
