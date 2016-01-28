@@ -1,9 +1,13 @@
-﻿namespace YoukaiKingdom.Logic.Models.Items.BonusAttributes
-{
-    using System;
+﻿using System;
 
+namespace YoukaiKingdom.Logic.Models.Items.BonusAttributes
+{
+    using System.Linq;
+
+    using YoukaiKingdom.Logic.Helpers;
     using YoukaiKingdom.Logic.Interfaces;
 
+    [Serializable]
     public class BonusAttributes : IBonusAttributes
     {
         public BonusAttributes()
@@ -11,20 +15,19 @@
             this.GenerateBonusAttributes();
         }
 
-        public bool HasBonuses { get; private set; }
+        public bool HasBonuses { get; set; }
 
-        public int АdditionalHealth { get; private set; }
+        public int АdditionalHealth { get; set; }
 
-        public int АdditionalMana { get; private set; }
+        public int АdditionalMana { get; set; }
 
-        public int АdditionalDamage { get; private set; }
+        public int АdditionalDamage { get; set; }
 
-        public int АdditionalArmor { get; private set; }
+        public int АdditionalArmor { get; set; }
 
         private void GenerateBonusAttributes()
         {
-            Random rand = new Random();
-            int num = rand.Next(0, 100);
+            int num = Utility.GetRandom(0, 100);
             if (num <= 20)
             {
                 this.HasBonuses = false;
@@ -32,24 +35,63 @@
             else
             {
                 this.HasBonuses = true;
-                this.АdditionalHealth = this.GenerateStats();
-                this.АdditionalArmor = this.GenerateStats();
-                this.АdditionalDamage = this.GenerateStats();
-                this.АdditionalMana = this.GenerateStats();
+
+                if (num > 20 && num <= 50)
+                {
+                    this.GenerateRandomOrder(1);
+                }
+                else if (num > 50 && num <= 75)
+                {
+                    this.GenerateRandomOrder(2);
+                }
+                else if (num > 75 && num <= 90)
+                {
+                    this.GenerateRandomOrder(3);
+                }
+                else
+                {
+                    this.GenerateRandomOrder(4);
+                }
             }
         }
 
-        private int GenerateStats()
+        private void GenerateRandomOrder(int attributeCount)
         {
-            Random rand = new Random();
-            int num = rand.Next(0, 100);
+            var randomNumbers = Enumerable.Range(0, 4)
+                          .Select(x => new { val = x, order = Utility.GetRandom(0, 100) })
+                          .OrderBy(i => i.order)
+                          .Select(x => x.val)
+                          .ToArray();
 
-            if (num <= 20)
+            for (int i = 0; i < attributeCount; i++)
             {
-                return 0;
+                this.AddStats((RandomAttributeTypes)randomNumbers[i]);
             }
-
-            return rand.Next(0, 10);
         }
+
+        private void AddStats(RandomAttributeTypes type)
+        {
+            if (type == RandomAttributeTypes.Health)
+            {
+                this.АdditionalHealth = Utility.GetRandom(1, 20);
+            }
+            else if (type == RandomAttributeTypes.Mana)
+            {
+                this.АdditionalMana = Utility.GetRandom(1, 20);
+            }
+            else if (type == RandomAttributeTypes.Armor)
+            {
+                this.АdditionalArmor = Utility.GetRandom(1, 20);
+            }
+            else if (type == RandomAttributeTypes.Damage)
+            {
+                this.АdditionalDamage = Utility.GetRandom(1, 20);
+            }
+        }
+    }
+
+    public enum RandomAttributeTypes
+    {
+        Health = 0, Mana = 1, Armor = 2, Damage = 3
     }
 }

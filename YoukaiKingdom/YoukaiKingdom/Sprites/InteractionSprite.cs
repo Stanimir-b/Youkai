@@ -1,26 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using YoukaiKingdom.Helpers;
+using YoukaiKingdom.Logic.Models.Inventory;
 
 namespace YoukaiKingdom.Sprites
 {
     public class InteractionSprite: Sprite
     {
         private Texture2D mTexture;
-        private int width;
-        private int height;
+        private readonly int width;
+        private readonly int height;
 
-        public InteractionSprite(Texture2D tex) : base(tex)
+        public InteractionSprite(Texture2D tex, InteractionType type, string name )
+            : base(tex)
         {
             this.mTexture = tex;
             this.width = this.mTexture.Width / 2;
             this.height = this.mTexture.Height;
-            this.BeenInteractedWith = false;       
+            this.BeenInteractedWith = false;
+            this.InteractionType = type;
+            this.Name = name;
+        }
+
+        public InteractionSprite(Texture2D tex, InteractionType type ) : base(tex)
+        {
+            this.mTexture = tex;
+            this.width = this.mTexture.Width / 2;
+            this.height = this.mTexture.Height;
+            this.BeenInteractedWith = false;
+            this.InteractionType = type;
         }
         public bool BeenInteractedWith { get; set; }
+        public Treasure Treasure { get; set; }
+        public InteractionType InteractionType { get; private set; }
+        public string Name { get; private set; }
 
         public override void SetCollisionRectangle()
         {

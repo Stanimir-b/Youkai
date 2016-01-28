@@ -5,28 +5,25 @@ namespace YoukaiKingdom.Logic.Models.Characters.Heroes
     using YoukaiKingdom.Logic.Interfaces;
     using YoukaiKingdom.Logic.Models.Characters.NPCs;
     using YoukaiKingdom.Logic.Models.Characters.Spells;
+
     public class Ninja : Hero
     {
-        private const int DefaultHealth = 380;
+        private const int DefaultHealth = 200;
         private const int DefaultMana = 50;
-        private const int DefaultDamage = 150;
+        private const int DefaultDamage = 70;
         private const int DefaultArmor = 50;
-        private readonly ProtectedOfDamage protectedOfDamage;
-        private const int DefaultSpeed = 100;
+        private readonly ProtectingShadow protectedOfDamage;
+        private const int DefaultAttackSpeed = 2000;
         private Timer hitTimer;
-        private Timer protectedTimer;
-
+        
         public Ninja(string name) : this(name, DefaultHealth, DefaultMana, DefaultDamage, DefaultArmor) { }
 
         public Ninja(string name, int health, int mana, int damage, int armor)
-            : base(name, health, mana, damage, armor, DefaultSpeed)
+            : base(name, health, mana, damage, armor, DefaultAttackSpeed)
         {
             this.hitTimer = new Timer(this.AttackSpeed);
             this.hitTimer.Elapsed += this.HitTimerElapsed;
-            this.protectedOfDamage = ProtectedOfDamage.CreateProtectedOfDamage();
-            this.protectedTimer = new Timer(5000);
-            this.protectedTimer.Elapsed += this.ProtectedTimerElapsed;
-
+            this.protectedOfDamage = ProtectingShadow.CreateProtectedOfDamage();
         }
 
         #region Default Values
@@ -62,6 +59,13 @@ namespace YoukaiKingdom.Logic.Models.Characters.Heroes
                 return DefaultMana;
             }
         }
+        public static int DefaultNinjaAttackSpeed
+        {
+            get
+            {
+                return DefaultAttackSpeed;
+            }
+        }
         public bool ProtectedOfDamageIsReady
         {
             get
@@ -84,42 +88,42 @@ namespace YoukaiKingdom.Logic.Models.Characters.Heroes
             {
                 var targetNpc = (Npc)target;
                 targetNpc.ReceiveHit(this.Damage, AttackType.Physical);
+                this.hitTimer.Interval = this.AttackSpeed;
                 this.IsReadyToAttack = false;
                 this.hitTimer.Start();
             }
         }
-        public void CastProtectedOfDamage(ICharacter enemy)
-        {
 
-            if (enemy is Npc && this.protectedOfDamage.IsReady)
+        public bool CastProtectedOfDamage()
+        {
+            if (this.protectedOfDamage.IsReady)
             {
                 if (this.RemoveManaPointsAfterCast(this.protectedOfDamage.ManaCost))
                 {
-                    this.protectedTimer.Start();
-                    this.Ready = false;
                     this.protectedOfDamage.Cast();
-                    this.protectedOfDamage.IsReady = false;
+                    return true;
                 }
             }
+
+            return false;
         }
 
-        private void ProtectedTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            if (this.Ready)
-            {
-                this.protectedTimer.Stop();
-            }
-
-            this.Ready = true;
-        }
         private void HitTimerElapsed(object sender, ElapsedEventArgs e)
         {
             if (this.IsReadyToAttack)
             {
                 this.hitTimer.Stop();
             }
+
             this.IsReadyToAttack = true;
         }
 
+        public override void ReceiveHit(int damage, AttackType type)
+        {
+            if (!this.protectedOfDamage.IsProtecting)
+            {
+                base.ReceiveHit(damage, type);
+            }
+        }
     }
 }

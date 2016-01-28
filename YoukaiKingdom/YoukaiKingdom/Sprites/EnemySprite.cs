@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using YoukaiKingdom.GameLogic;
@@ -26,7 +23,6 @@ namespace YoukaiKingdom.Sprites
         private int patrollingAreaWidth;
         private int patrollingAreaHeight;
         private int enemyView;
-        private bool standingStill;
         private int enemyWidth;
         private int enemyHeight;
 
@@ -45,7 +41,7 @@ namespace YoukaiKingdom.Sprites
         #region Constructors
 
         public EnemySprite(Npc enemy, Texture2D sprite, 
-                Dictionary<AnimationKey, Animation> animation, int eWidth, int eHeight)
+                Dictionary<AnimationKey, Animation> animation, int eWidth, int eHeight, bool isBoss)
                 : base(sprite, animation)
         {
             this.Enemy = enemy;
@@ -60,6 +56,7 @@ namespace YoukaiKingdom.Sprites
             this.patrollingArea = new Rectangle((int)Position.X, (int)Position.Y, patrollingAreaWidth, patrollingAreaHeight);
             this.enemyWidth = eWidth;
             this.enemyHeight = eHeight;
+            this.IsBoss = isBoss;
         }
 
         #endregion
@@ -67,9 +64,10 @@ namespace YoukaiKingdom.Sprites
         #region Properties
 
         public Npc Enemy { get; set; }
-        public Texture2D fillHealthTexture { get; set; }
-        public Texture2D currentHealthTexture { get; set; }
+        public Texture2D FillHealthTexture { get; set; }
+        public Texture2D CurrentHealthTexture { get; set; }
         public bool AttackingPlayer { get; private set; }
+        public bool IsBoss { get; private set; }
 
         #endregion
 
@@ -78,7 +76,7 @@ namespace YoukaiKingdom.Sprites
         public void Update(GameTime gameTime, GamePlayScreen mGame)
         {
             collisionRectangle = new Rectangle((int)Position.X, (int)Position.Y, this.enemyWidth, this.enemyHeight);
-            //Set position when player character stands
+            //Set position when enemy character stands
             this.IsAnimating = true;
             mSpeed = Vector2.Zero;
             mDirection = Vector2.Zero;
@@ -120,8 +118,8 @@ namespace YoukaiKingdom.Sprites
                 CheckIfPlayerIsInRange();
                 CheckCollisionWithPlayer();
             }
-            if (!AttackingPlayer)    
-                if (!standingStill)
+            if (!AttackingPlayer)
+
                 switch (currentLookingPosition)
                 {
                     case LookingPosition.LookDown:
@@ -237,7 +235,6 @@ namespace YoukaiKingdom.Sprites
 
             if (patrollingAreaHeight == 0 && patrollingAreaWidth == 0)
             {
-                standingStill = true;
                 this.mSpeed = Vector2.Zero;
             }
             else

@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using YoukaiKingdom.GameLogic;
 using YoukaiKingdom.Helpers;
 using YoukaiKingdom.Logic.Models.Characters.Heroes;
-using YoukaiKingdom.Logic.Models.Items.Armors;
-using YoukaiKingdom.Logic.Models.Items.Potions;
-using YoukaiKingdom.Logic.Models.Items.Weapons;
 using YoukaiKingdom.Sprites;
 
 namespace YoukaiKingdom.GameScreens
@@ -60,7 +54,6 @@ namespace YoukaiKingdom.GameScreens
         private StringBuilder descriptionNin;
         //name input
         private Texture2D nameInputTexture;
-        private Texture2D caretTexture;
         private TextBox nameInputTextbox;
         private KeyboardInput input;
 
@@ -74,7 +67,7 @@ namespace YoukaiKingdom.GameScreens
         protected override void LoadContent()
         {
             mBackground = new Background(1);
-            Texture2D mainMenuBackground = MGame.Content.Load<Texture2D>("Sprites/Backgrounds/MainMenuBackground");
+            var mainMenuBackground = MGame.Content.Load<Texture2D>("Sprites/Backgrounds/MainMenuBackground");
             mBackground.Load(MGame.GraphicsDevice, mainMenuBackground);
 
             offerSelectionTexture = MGame.Content.Load<Texture2D>("Sprites/UI/CC_hero_selection_texture");
@@ -87,7 +80,7 @@ namespace YoukaiKingdom.GameScreens
 
             forwardReg = MGame.Content.Load<Texture2D>("Sprites/UI/CC_ForwardButton");
             forwardHover = MGame.Content.Load<Texture2D>("Sprites/UI/CC_ForwardButton_hover");
-            forwardButton = new Button(forwardReg, forwardHover, this.MGame.GraphicsDevice);
+            forwardButton = new Button(forwardReg, forwardHover);
             forwardButton.SetPosition(new Vector2(740, 420));
             confirmationSignTexture = MGame.Content.Load<Texture2D>("Sprites/UI/CC_ConfirmationTexture");
             confirmationSprite = new StillSprite(confirmationSignTexture) { Position = new Vector2(580, 420) };
@@ -99,16 +92,21 @@ namespace YoukaiKingdom.GameScreens
             ninButtonHover = MGame.Content.Load<Texture2D>("Sprites/UI/CC_nin_sel_hov");
 
 
-            showSamurai = new Button(samButtonReg, samButtonHover, this.MGame.GraphicsDevice);
+            showSamurai = new Button(samButtonReg, samButtonHover);
             showSamurai.SetPosition(new
                 Vector2(MGame.GraphicsDevice.Viewport.Width / 4 - samButtonReg.Width / 2, 150));
-            showMonk = new Button(monButtonReg, monButtonHover, this.MGame.GraphicsDevice);
+            showMonk = new Button(monButtonReg, monButtonHover);
             showMonk.SetPosition(new
                 Vector2(MGame.GraphicsDevice.Viewport.Width / 2 - monButtonReg.Width / 2, 150));
-            showNinja = new Button(ninButtonReg, ninButtonHover, this.MGame.GraphicsDevice);
+            showNinja = new Button(ninButtonReg, ninButtonHover);
             showNinja.SetPosition(new
                 Vector2(MGame.GraphicsDevice.Viewport.Width -
                     MGame.GraphicsDevice.Viewport.Width / 4 - ninButtonReg.Width / 2, 150));
+
+            showSamurai.EnteringSelection += PlaySound;
+            showMonk.EnteringSelection += PlaySound;
+            showNinja.EnteringSelection += PlaySound;
+            forwardButton.EnteringSelection += PlaySound;
 
             classTextVector = new Vector2(300, 350);
             samuraiRep = MGame.Content.Load<Texture2D>("Sprites/playerClasses/Male_Samurai_Representation");
@@ -170,22 +168,21 @@ namespace YoukaiKingdom.GameScreens
 
 
             currentClass = CharacterType.Samurai;
-            showSamurai.isSelected = true;
+            showSamurai.IsSelected = true;
 
             nameLabelTexture = MGame.Content.Load<Texture2D>("Sprites/UI/CC_NameLabel");
             nameLabel = new StillSprite(nameLabelTexture) { Position = new Vector2(20, 405) };
             nameInputTexture = MGame.Content.Load<Texture2D>("Sprites/UI/CC_name_input");
-            caretTexture = MGame.Content.Load<Texture2D>("Sprites/UI/CC_text_caret");
-            nameInputTextbox = new TextBox(nameInputTexture, caretTexture, font);
+            nameInputTextbox = new TextBox(nameInputTexture, font);
             nameInputTextbox.SetPosition(new Vector2(107, 400));
             typedText = "";
-            input = new KeyboardInput(this, nameInputTextbox);
+            input = new KeyboardInput(nameInputTextbox);
 
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (MGame.gameStateScreen == GameState.CharacterSelectionScreenState)
+            if (MGame.GameStateScreen == GameState.CharacterSelectionScreenState)
             {
                 nameInputTextbox.Update(gameTime);
                 input.Update(gameTime, nameInputTextbox);
@@ -193,7 +190,7 @@ namespace YoukaiKingdom.GameScreens
                 KeyboardState state = Keyboard.GetState();
                 MouseState mouse = Mouse.GetState();
                 Point mousePoint = new Point(mouse.X, mouse.Y);
-                if (nameInputTextbox.positionRect.Contains(mousePoint))
+                if (nameInputTextbox.PositionRect.Contains(mousePoint))
                 {
                     if (mouse.LeftButton == ButtonState.Pressed)
                     {
@@ -209,79 +206,81 @@ namespace YoukaiKingdom.GameScreens
                         nameInputTextbox.Highlighted = false;
                     }
                 }
-                forwardButton.Update(state, mouse);
-                showSamurai.Update(state, mouse);
-                showMonk.Update(state, mouse);
-                showNinja.Update(state, mouse);
+                forwardButton.Update(state, mouse, 0, 0);
+                showSamurai.Update(state, mouse, 0, 0);
+                showMonk.Update(state, mouse, 0, 0);
+                showNinja.Update(state, mouse, 0, 0);
 
                 typedText = nameInputTextbox.InputText;
 
-                if (showSamurai.isSelected)
+                if (showSamurai.IsSelected)
                 {
-                    showSamurai.isSelected = true;
-                    showMonk.isSelected = false;
-                    showNinja.isSelected = false;
+                    showSamurai.IsSelected = true;
+                    showMonk.IsSelected = false;
+                    showNinja.IsSelected = false;
                 }
-                else if (showMonk.isSelected)
+                else if (showMonk.IsSelected)
                 {
-                    showSamurai.isSelected = false;
-                    showMonk.isSelected = true;
-                    showNinja.isSelected = false;
+                    showSamurai.IsSelected = false;
+                    showMonk.IsSelected = true;
+                    showNinja.IsSelected = false;
                 }
-                else if (showNinja.isSelected)
+                else if (showNinja.IsSelected)
                 {
-                    showSamurai.isSelected = false;
-                    showMonk.isSelected = false;
-                    showNinja.isSelected = true;
+                    showSamurai.IsSelected = false;
+                    showMonk.IsSelected = false;
+                    showNinja.IsSelected = true;
                 }
 
-                if (showSamurai.isClicked)
+                if (showSamurai.IsClicked)
                 {
                     currentClass = CharacterType.Samurai;
                     representation.mSpriteTexture = samuraiRep;
                 }
-                if (showMonk.isClicked)
+                if (showMonk.IsClicked)
                 {
                     currentClass = CharacterType.Monk;
                     representation.mSpriteTexture = monkRep;
                 }
-                if (showNinja.isClicked)
+                if (showNinja.IsClicked)
                 {
                     currentClass = CharacterType.Ninja;
                     representation.mSpriteTexture = ninjaRep;
                 }
-                if (this.forwardButton.isClicked)
+                if (this.forwardButton.IsClicked)
                 {
                     switch (this.currentClass)
                     {
                         case CharacterType.Samurai:
                             {
-                                this.MGame.Engine = new GameEngine(new Samurai((this.typedText == string.Empty) ? "Nameless Hero" : this.typedText));
+                                this.MGame.Engine = GameEngine.Start(new Samurai((this.typedText == string.Empty)
+                                    ? "Nameless Hero" : this.typedText), 1);
                                 break;
                             }
                         case CharacterType.Monk:
                             {
-                                this.MGame.Engine = new GameEngine(new Monk((this.typedText == string.Empty) ? "Nameless Hero" : this.typedText));
+                                this.MGame.Engine = GameEngine.Start(new Monk((this.typedText == string.Empty)
+                                    ? "Nameless Hero" : this.typedText), 1);
                                 break;
                             }
                         case CharacterType.Ninja:
                             {
-                                this.MGame.Engine = new GameEngine(new Ninja((this.typedText == string.Empty) ? "Nameless Hero" : this.typedText));
+                                this.MGame.Engine = GameEngine.Start(new Ninja((this.typedText == string.Empty)
+                                    ? "Nameless Hero" : this.typedText), 1);
                                 break;
                             }
                     }
 
-                    MGame.heroType = currentClass;
+                    MGame.HeroType = currentClass;
 
                     MGame.GamePlayScreen = new GamePlayScreen(MGame);
+                    MGame.GamePlayScreen.LevelNumber = LevelNumber.One;
                     MGame.Components.Add(MGame.GamePlayScreen);
                     MGame.GamePlayScreen.Initialize();
                     MGame.InventoryScreen = new InventoryScreen(MGame);
                     MGame.Components.Add(MGame.InventoryScreen);
                     MGame.InventoryScreen.Initialize();
-                    //MGame.InventoryScreen.Enabled = false;
-                    //MGame.InventoryScreen.Visible = false;
-                    MGame.gameStateScreen = GameState.GameScreenState;
+                    MGame.GameStateScreen = GameState.GameScreenState;
                 }
             }
         }
@@ -324,7 +323,5 @@ namespace YoukaiKingdom.GameScreens
             //MGame.SpriteBatch.DrawString(font, typedText, nameInputVector, Color.DarkRed);
             MGame.SpriteBatch.End();
         }
-
-        public StringBuilder descriptionMonk { get; set; }
     }
 }

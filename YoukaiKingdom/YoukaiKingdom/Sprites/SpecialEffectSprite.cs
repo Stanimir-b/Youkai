@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Timers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using YoukaiKingdom.GameLogic;
-using YoukaiKingdom.GameScreens;
 using YoukaiKingdom.Helpers;
 
 namespace YoukaiKingdom.Sprites
@@ -14,8 +10,7 @@ namespace YoukaiKingdom.Sprites
     class SpecialEffectSprite : AnimatedSprite
     {
         private Animation animation;
-        public bool IsOver;
-
+        
         public SpecialEffectSprite(Texture2D sprite, Dictionary<AnimationKey, Animation> animation) :
             base(sprite, animation)
         {
@@ -26,25 +21,25 @@ namespace YoukaiKingdom.Sprites
             this.mSpriteTexture = sprite;
             this.animation = animation;
             this.IsOver = true;
+            this.STimer = new Timer();
+            this.STimer.Elapsed += this.STimerElapsed;
         }
 
-        public Sprite AffectedSprite;
         public Timer STimer { get; set; }
+        public bool IsOver { get; set; }
 
         private void STimerElapsed(object sender, ElapsedEventArgs e)
         {
-            this.STimer.Enabled = false;
+            this.STimer.Stop();
+
             this.IsOver = true;
         }
-
 
         public void Update(GameTime gameTime)
         {
             if (this.IsOver == false)
             {
-                this.STimer.Elapsed += new ElapsedEventHandler(STimerElapsed);
-                this.STimer.Enabled = true; // Enable timer
-                this.animation.Update(gameTime);       
+                this.animation.Update(gameTime);
             }
         }
 
@@ -58,6 +53,13 @@ namespace YoukaiKingdom.Sprites
                this.animation.CurrentFrameRect,
                Color.White);
             }
+        }
+
+        public void StartTimer(int interval)
+        {
+            this.STimer.Interval = interval;
+            this.IsOver = false;
+            this.STimer.Start();
         }
     }
 }

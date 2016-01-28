@@ -10,8 +10,8 @@ namespace YoukaiKingdom.Logic.Models.Characters.NPCs
     {
         private const int DefaultHealth = 150;
         private const int DefaultMana = 400;
-        private const int DefaultDamage = 85;
-        private const int DefaultArmor = 70;
+        private const int DefaultDamage = 65;
+        private const int DefaultArmor = 20;
 
         private readonly Fireball fireball;
 
@@ -35,6 +35,7 @@ namespace YoukaiKingdom.Logic.Models.Characters.NPCs
             this.Damage += (this.Level * 20);
             this.Health = this.MaxHealth;
             this.Mana = this.MaxMana;
+            this.Level = level;
         }
 
         public override void Hit(ICharacter target)

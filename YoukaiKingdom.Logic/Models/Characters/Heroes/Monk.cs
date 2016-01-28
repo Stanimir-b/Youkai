@@ -8,12 +8,12 @@ namespace YoukaiKingdom.Logic.Models.Characters.Heroes
 
     public class Monk : Hero
     {
-        private const int DefaultHealth = 150;
+        private const int DefaultHealth = 250;
         private const int DefaultMana = 400;
-        private const int DefaultDamage = 85;
-        private const int DefaultArmor = 70;
+        private const int DefaultDamage = 50;
+        private const int DefaultArmor = 20;
 
-        private const int DefaultAttackSpeed = 100;
+        private const int DefaultAttackSpeed = 2000;
 
         private readonly Fireball fireball;
 
@@ -66,6 +66,14 @@ namespace YoukaiKingdom.Logic.Models.Characters.Heroes
             }
         }
 
+        public static int DefaultMonkAttackSpeed
+        {
+            get
+            {
+                return DefaultAttackSpeed;
+            }
+        }
+
         #endregion Default Values
 
         public int FireballCastRange
@@ -83,6 +91,7 @@ namespace YoukaiKingdom.Logic.Models.Characters.Heroes
                 var targetNpc = (Npc)target;
                 targetNpc.ReceiveHit(this.Damage, AttackType.Physical);
                 this.IsReadyToAttack = false;
+                this.hitTimer.Interval = this.AttackSpeed;
                 this.hitTimer.Start();
             }
         }
@@ -95,16 +104,19 @@ namespace YoukaiKingdom.Logic.Models.Characters.Heroes
             }
         }
 
-        public void CastFireball(ICharacter enemy)
+        public bool CastFireball(ICharacter enemy)
         {
             if (enemy is Npc && this.fireball.IsReady)
             {
-                if (this.RemoveManaPointsAfterCast(this.fireball.ManaCost + (this.Level * 50)))
+                if (this.RemoveManaPointsAfterCast(this.fireball.ManaCost + (this.Level * 10)))
                 {
                     enemy.ReceiveHit(this.fireball.Cast(this.Level), AttackType.Magical);
                     this.fireball.IsReady = false;
+                    return true;
                 }
             }
+
+            return false;
         }
 
         void HitTimerElapsed(object sender, ElapsedEventArgs e)

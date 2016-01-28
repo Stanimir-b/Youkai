@@ -6,7 +6,7 @@
     {
         private const int DefaultDamage = 150;
 
-        private const int DefaultManaCost = 5;
+        private const int DefaultManaCost = 30;
 
         private const double DefaultCastInterval = 2000; //milisec
 
@@ -35,7 +35,7 @@
         public int Cast(int playerLevel)
         {
             this.hitTimer.Start();
-            return this.Damage + (playerLevel * 50);
+            return this.Damage + (playerLevel * 20);
         }
 
         void HitTimerElapsed(object sender, ElapsedEventArgs e)

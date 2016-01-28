@@ -1,110 +1,115 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using YoukaiKingdom.Helpers;
-using Microsoft.Xna.Framework;
-
-
-namespace YoukaiKingdom.GameLogic
+﻿namespace YoukaiKingdom.GameLogic
 {
+    using System;
+
+    using Microsoft.Xna.Framework;
+
     public class Animation: ICloneable
     {
-        Rectangle[] frames;
-        int framesPerSecond;
-        TimeSpan frameLength;
-        TimeSpan frameTimer;
-        int currentFrame;
-        int frameWidth;
-        int frameHeight;
+        #region Fields
+        private Rectangle[] frames;
+        private int framesPerSecond;
+        private TimeSpan frameLength;
+        private TimeSpan frameTimer;
+        private int currentFrame;
+        private int frameWidth;
+        private int frameHeight;
+        #endregion
 
-        public int FramesPerSecond
-        {
-            get { return framesPerSecond; }
-            set
-            {
-                if (value < 1)
-                    framesPerSecond = 1;
-                else if (value > 60)
-                    framesPerSecond = 60;
-                else
-                    framesPerSecond = value;
-                frameLength = TimeSpan.FromSeconds(1 / (double)framesPerSecond);
-            }
-        }
-
-        public Rectangle CurrentFrameRect
-        {
-            get { return frames[currentFrame]; }
-        }
-
-        public int CurrentFrame
-        {
-            get { return currentFrame; }
-            set { currentFrame = (int)MathHelper.Clamp(value, 0, frames.Length - 1); }
-        }
-
-        public int FrameWidth
-        { 
-            get { return frameWidth; }
-        }
-
-        public int FrameHeight
-        {
-            get { return frameHeight; }
-        }
-
+        #region Constructors
         public Animation(int frameCount, int frameWidth, int frameHeight, int xOffset, int yOffset)
         {
-            frames = new Rectangle[frameCount];
+            this.frames = new Rectangle[frameCount];
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
 
             for (int i = 0; i < frameCount; i++)
             {
-                frames[i] = new Rectangle(
+                this.frames[i] = new Rectangle(
                         xOffset + (frameWidth * i),
                         yOffset,
                         frameWidth,
                         frameHeight);
             }
-            FramesPerSecond = 5;
-            Reset();
+            this.FramesPerSecond = 5;
+            this.Reset();
         }
 
         private Animation(Animation animation)
         {
             this.frames = animation.frames;
-            FramesPerSecond = 5;
+            this.FramesPerSecond = 5;
+        }
+        #endregion
+
+        #region Propertes
+        public int FramesPerSecond
+        {
+            get { return this.framesPerSecond; }
+            set
+            {
+                if (value < 1)
+                    this.framesPerSecond = 1;
+                else if (value > 60)
+                    this.framesPerSecond = 60;
+                else
+                    this.framesPerSecond = value;
+                this.frameLength = TimeSpan.FromSeconds(1 / (double)this.framesPerSecond);
+            }
         }
 
+        public Rectangle CurrentFrameRect
+        {
+            get { return this.frames[this.currentFrame]; }
+        }
+
+        public int CurrentFrame
+        {
+            get { return this.currentFrame; }
+            set { this.currentFrame = (int)MathHelper.Clamp(value, 0, this.frames.Length - 1); }
+        }
+
+        public int FrameWidth
+        {
+            get { return this.frameWidth; }
+        }
+
+        public int FrameHeight
+        {
+            get { return this.frameHeight; }
+        }
+        #endregion
+
+        #region Methods
         public void Update(GameTime gameTime)
         {
-            frameTimer += gameTime.ElapsedGameTime;
+            this.frameTimer += gameTime.ElapsedGameTime;
 
-            if (frameTimer >= frameLength)
+            if (this.frameTimer >= this.frameLength)
             {
-                frameTimer = TimeSpan.Zero;
-                currentFrame = (currentFrame + 1) % frames.Length;
+                this.frameTimer = TimeSpan.Zero;
+                this.currentFrame = (this.currentFrame + 1) % this.frames.Length;
             }
         }
 
         public void Reset()
         {
-            currentFrame = 0;
-            frameTimer = TimeSpan.Zero;
+            this.currentFrame = 0;
+            this.frameTimer = TimeSpan.Zero;
         }
 
         public object Clone()
         {
-            Animation animationClone = new Animation(this);
+            var animationClone = new Animation(this)
+            {
+                frameWidth = this.frameWidth, 
+                frameHeight = this.frameHeight
+            };
 
-            animationClone.frameWidth = this.frameWidth;
-            animationClone.frameHeight = this.frameHeight;
             animationClone.Reset();
 
             return animationClone;
         }
-
+        #endregion
     }
 }

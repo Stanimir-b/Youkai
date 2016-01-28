@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameEngine.cs" />
+    <Compile Include="Helpers\Utility.cs" />
     <Compile Include="Interfaces\IArmor.cs" />
     <Compile Include="Interfaces\ICharacter.cs" />
     <Compile Include="Interfaces\IItem.cs" />
@@ -60,11 +62,12 @@
     <Compile Include="Models\Characters\NPCs\NpcWarrior.cs" />
     <Compile Include="Models\Characters\Heroes\Samurai.cs" />
     <Compile Include="Models\Characters\Spells\Fireball.cs" />
-    <Compile Include="Models\Characters\Spells\ProtectedOfDamage.cs" />
+    <Compile Include="Models\Characters\Spells\ProtectingShadow.cs" />
     <Compile Include="Models\Characters\Spells\Spell.cs" />
     <Compile Include="Models\Characters\Spells\ТheЕqualizer.cs" />
     <Compile Include="Models\Inventory\Inventory.cs" />
     <Compile Include="Models\Inventory\Loot.cs" />
+    <Compile Include="Models\Inventory\Treasure.cs" />
     <Compile Include="Models\Items\Armors\Armor.cs" />
     <Compile Include="Models\Items\Armors\BodyArmor.cs" />
     <Compile Include="Models\Items\Armors\Boots.cs" />

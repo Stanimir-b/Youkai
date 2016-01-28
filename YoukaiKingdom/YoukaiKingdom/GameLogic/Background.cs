@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-
 namespace YoukaiKingdom.GameLogic
 {
     class Background
@@ -9,10 +8,6 @@ namespace YoukaiKingdom.GameLogic
         #region Fields
 
         private Texture2D mTexture;
-        private int screenheight;
-        private int screenwidth;
-        private int worldWidth;
-        private int worldHeight;
         private int numberOfLoops;
 
         #endregion
@@ -28,17 +23,9 @@ namespace YoukaiKingdom.GameLogic
 
         #region Properties
 
-        public int WorldWidth
-        {
-            get { return this.worldWidth; }
-            set { this.worldWidth = value; }
-        }
+        public int WorldWidth { get; set; }
 
-        public int WorldHeight
-        {
-            get { return this.worldHeight; }
-            set { this.worldHeight = value; }
-        }
+        public int WorldHeight { get; set; }
 
         #endregion
 
@@ -46,29 +33,26 @@ namespace YoukaiKingdom.GameLogic
 
         public void Load(GraphicsDevice device, Texture2D backgroundTexture)
         {
-            mTexture = backgroundTexture;
-            screenheight = device.Viewport.Height;
-            screenwidth = device.Viewport.Width;
-
+            this.mTexture = backgroundTexture;
             // current world height and width
-            WorldWidth = mTexture.Width * numberOfLoops;
-            WorldHeight = mTexture.Height * numberOfLoops;
+            this.WorldWidth = this.mTexture.Width * this.numberOfLoops;
+            this.WorldHeight = this.mTexture.Height * this.numberOfLoops;
             
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            Rectangle destination = new Rectangle(0, 0, mTexture.Width, mTexture.Height);
+            var destination = new Rectangle(0, 0, this.mTexture.Width, this.mTexture.Height);
 
-          
-                for (int y = 0; y < numberOfLoops; y++)
+
+            for (int y = 0; y < this.numberOfLoops; y++)
                 {
-                    destination.Y = y * mTexture.Height;
+                    destination.Y = y * this.mTexture.Height;
 
-                    for (int x = 0; x < numberOfLoops; x++)
+                    for (int x = 0; x < this.numberOfLoops; x++)
                     {
-                        destination.X = x * mTexture.Width;
+                        destination.X = x * this.mTexture.Width;
                         spriteBatch.Draw(
-                            mTexture,
+                            this.mTexture,
                             destination,
                             null,
                             Color.White);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,6 +13,7 @@ namespace YoukaiKingdom.Sprites
         public IItem mItem;
         public bool IsSelected = false;
         public bool IsClicked = false;
+        public bool ShowContextMenu = false;
         public StringBuilder ItemDescription;
 
 
@@ -52,12 +52,25 @@ namespace YoukaiKingdom.Sprites
                 if (armor.Bonus != null)
                     if (armor.Bonus.HasBonuses)
                     {
+                        this.BigDescription = true;
+                        if (armor.Bonus.АdditionalHealth > 0)
                         {
-                            this.BigDescription = true;
-                            ItemDescription.AppendLine("Bonus health points: " + armor.Bonus.АdditionalHealth);
-                            ItemDescription.AppendLine("Bonus mana points: " + armor.Bonus.АdditionalMana);
-                            ItemDescription.AppendLine("Bonus attack points: " + armor.Bonus.АdditionalDamage);
-                            ItemDescription.AppendLine("Bonus defence points: " + armor.Bonus.АdditionalArmor);
+                            this.ItemDescription.AppendLine("Bonus health points: " + armor.Bonus.АdditionalHealth);
+                        }
+
+                        if (armor.Bonus.АdditionalMana > 0)
+                        {
+                            this.ItemDescription.AppendLine("Bonus mana points: " + armor.Bonus.АdditionalMana);
+                        }
+
+                        if (armor.Bonus.АdditionalDamage > 0)
+                        {
+                            this.ItemDescription.AppendLine("Bonus attack points: " + armor.Bonus.АdditionalDamage);
+                        }
+
+                        if (armor.Bonus.АdditionalArmor > 0)
+                        {
+                            this.ItemDescription.AppendLine("Bonus defence points: " + armor.Bonus.АdditionalArmor);
                         }
                     }
                 //itemDescription.AppendLine("Bonus attributes: " + armor.Bonus);
@@ -93,6 +106,10 @@ namespace YoukaiKingdom.Sprites
                 if (mouse.LeftButton == ButtonState.Pressed)
                 {
                     this.IsClicked = true;
+                }
+                if (mouse.RightButton == ButtonState.Pressed)
+                {
+                    this.ShowContextMenu = true;
                 }
             }
         }

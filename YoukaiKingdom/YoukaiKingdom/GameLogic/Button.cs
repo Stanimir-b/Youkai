@@ -1,95 +1,112 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Input;
-
-namespace YoukaiKingdom.GameLogic
+﻿namespace YoukaiKingdom.GameLogic
 {
+    using System;
+
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
+
     class Button
     {
-        private Texture2D _currentTexture;
-        private readonly Texture2D _regularTexture;
-        private readonly Texture2D _hoverTexture;
+        #region Fields
+
+        private Texture2D currentTexture;
+        private readonly Texture2D regularTexture;
+        private readonly Texture2D hoverTexture;
         private Vector2 position;
-        public Rectangle rectangle;
 
-        public Button(Texture2D regularTexture, Texture2D hoverTexture, GraphicsDevice graphics)
+        #endregion
+        
+        #region Events
+        public event EventHandler EnteringSelection;
+        #endregion
+
+        #region Constructors
+
+        public Button(Texture2D regularTexture, Texture2D hoverTexture)
         {
             this.CurrentTexture = regularTexture;
-            this._regularTexture = regularTexture;
-            this._hoverTexture = hoverTexture;
+            this.regularTexture = regularTexture;
+            this.hoverTexture = hoverTexture;
 
         }
-        public Button(Texture2D regularTexture, GraphicsDevice graphics)
+        public Button(Texture2D regularTexture)
         {
             this.CurrentTexture = regularTexture;
-            this._regularTexture = regularTexture;
-            this._hoverTexture = regularTexture;
-            this.isSelected = false;
-            this.isClicked = false;
+            this.regularTexture = regularTexture;
+            this.hoverTexture = regularTexture;
+            this.IsSelected = false;
+            this.IsClicked = false;
         }
 
-        public bool isClicked;
-        public bool isSelected;
-        public event EventHandler Click;
+        #endregion
+
+        #region Properties
+
+        public bool IsClicked { get; set; }
+        public bool IsSelected { get; set; }
+        public Rectangle Rectangle { get; private set; }
 
         public Texture2D CurrentTexture
         {
-            get { return _currentTexture; }
-            set { _currentTexture = value; }
+            get { return this.currentTexture; }
+            set { this.currentTexture = value; }
         }
+        #endregion
 
-        protected void OnClick()
+        #region Methods
+
+        public void Update(KeyboardState state, MouseState mouse, int offsetX, int offsetY)
         {
-            if (Click != null)
+            Rectangle mouseRectangle = new Rectangle(mouse.X + offsetX, mouse.Y + offsetY, 1, 1);
+            this.Rectangle = new Rectangle((int)this.position.X, (int)this.position.Y, this.CurrentTexture.Width, this.CurrentTexture.Height);
+            this.IsClicked = false;
+            if (mouseRectangle.Intersects(this.Rectangle))
             {
-                this.Click(this, new EventArgs());
-            }
-        }
-
-
-        public void Update(KeyboardState state, MouseState mouse)
-        {
-            Rectangle mouseRectangle = new Rectangle(mouse.X, mouse.Y, 1, 1);
-            rectangle = new Rectangle((int)position.X, (int)position.Y, CurrentTexture.Width, CurrentTexture.Height);
-            this.isClicked = false;
-            if (mouseRectangle.Intersects(rectangle))
-            {
-                this.isSelected = true;
+                if (!this.IsSelected)
+                {
+                    this.OnEnteringSelect();
+                }
+                this.IsSelected = true;
             }
             else
             {
-                this.isSelected = false;
+                this.IsSelected = false;
             }
-            if (isSelected)
+            if (this.IsSelected)
             {
-                this.CurrentTexture = _hoverTexture;
+                this.CurrentTexture = this.hoverTexture;
                 if (state.IsKeyDown(Keys.Enter)|| mouse.LeftButton == ButtonState.Pressed)
                 {
-                    this.OnClick();
-                    this.isClicked = true;
+                    this.IsClicked = true;
+                   
                 }
             }
             else
             {
-                this.CurrentTexture = _regularTexture;
-                isClicked = false;
+                this.CurrentTexture = this.regularTexture;
+                this.IsClicked = false;
+            }
+        }
+
+        protected void OnEnteringSelect()
+        {
+            if (this.EnteringSelection != null)
+            {
+                this.EnteringSelection(this, new EventArgs());
             }
         }
 
         public void SetPosition(Vector2 newPosition)
         {
-            position = newPosition;
+            this.position = newPosition;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_currentTexture,
-              position, Color.White);
+            spriteBatch.Draw(this.currentTexture,
+              this.position, Color.White);
         }
+        #endregion
     }
 }

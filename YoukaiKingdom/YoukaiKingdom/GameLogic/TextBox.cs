@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using YoukaiKingdom.Interfaces;
 
 namespace YoukaiKingdom.GameLogic
@@ -10,83 +9,66 @@ namespace YoukaiKingdom.GameLogic
 
     public class TextBox : IInputTextbox
     {
-        Texture2D _textBoxTexture;
-        Texture2D _caretTexture;
-
-        SpriteFont _font;
+        private Texture2D textBoxTexture;
+        private SpriteFont font;
         private Vector2 position;
+        string text = "";
+
+
+        public TextBox(Texture2D textBoxTexture, SpriteFont font)
+        {
+            this.textBoxTexture = textBoxTexture;
+            this.Width = textBoxTexture.Width;
+            this.Height = textBoxTexture.Height / 2;
+            this.font = font;
+        }
 
         public int X { get; set; }
         public int Y { get; set; }
         public int Width { get; set; }
         public int Height { get; private set; }
-        public Rectangle positionRect;
+        public Rectangle PositionRect { get; set; }
         public bool Highlighted { get; set; }
-
-        string _text = "";
         public String InputText
         {
             get
             {
-                return _text;
+                return this.text;
             }
             set
             {
-                _text = value;
-                if (_text == null)
-                    _text = "";   
+                this.text = value ?? "";
             }
         }
 
-        public TextBox(Texture2D textBoxTexture, Texture2D caretTexture, SpriteFont font)
-        {
-            _textBoxTexture = textBoxTexture;
-            this.Width = textBoxTexture.Width;
-            this.Height = textBoxTexture.Height/2;
-            _caretTexture = caretTexture;
-            _font = font;
+        public bool Selected { get; set; }
 
-            _previousMouse = Mouse.GetState();
-        }
-
-        MouseState _previousMouse;
-
+        #region Methods
         public void SetPosition(Vector2 newPosition)
         {
-            position = newPosition;
+            this.position = newPosition;
         }
-
 
         public void Update(GameTime gameTime)
         {
-            positionRect = new Rectangle((int)position.X, (int)position.Y, Width, Height);
+            this.PositionRect = new Rectangle((int)this.position.X, (int)this.position.Y, this.Width, this.Height);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            String toDraw = InputText;
-
-            spriteBatch.Draw(_textBoxTexture, 
-                new Rectangle((int)position.X, (int)position.Y, Width, Height), 
-                new Rectangle(0, Highlighted ? 
-                    (_textBoxTexture.Height / 2) : 0, 
-                    _textBoxTexture.Width, _textBoxTexture.Height / 2), Color.White);
-            Vector2 size = _font.MeasureString(toDraw);
-            spriteBatch.DrawString(_font, toDraw, new Vector2((int)position.X + 3, (int)position.Y + 3), Color.DarkRed);
-        }
-        public void RecieveTextInput(char inputChar)
-        {
-            InputText = InputText + inputChar;
-        }
-        public void RecieveTextInput(string text)
-        {
-            InputText = text;
+            String toDraw = this.InputText;
+            spriteBatch.Draw(this.textBoxTexture,
+                new Rectangle((int)this.position.X, (int)this.position.Y, this.Width, this.Height),
+                new Rectangle(0, this.Highlighted ?
+                    (this.textBoxTexture.Height / 2) : 0,
+                    this.textBoxTexture.Width, this.textBoxTexture.Height / 2), Color.White);
+            spriteBatch.DrawString(this.font, toDraw, new Vector2((int)this.position.X + 3, (int)this.position.Y + 3), Color.DarkRed);
         }
 
-        public bool Selected
+        public void RecieveTextInput(string txt)
         {
-            get;
-            set;
+            this.InputText = txt;
         }
+        #endregion
     }
 }

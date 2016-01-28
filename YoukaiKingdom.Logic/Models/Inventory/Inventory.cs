@@ -6,7 +6,6 @@
     using YoukaiKingdom.Logic.Interfaces;
     using YoukaiKingdom.Logic.Models.Items;
     using YoukaiKingdom.Logic.Models.Items.Armors;
-    using YoukaiKingdom.Logic.Models.Items.Weapons.OneHanded;
 
     public class Inventory
     {
@@ -37,10 +36,13 @@
 
         public void AddItemToBag(Item item)
         {
-            this.bag.Add(item);
-            if (this.bag.Count == MaxBagSlots)
+            if (!this.IsFull)
             {
-                this.IsFull = true;
+                this.bag.Add(item);
+                if (this.bag.Count == MaxBagSlots)
+                {
+                    this.IsFull = true;
+                }
             }
         }
 
@@ -64,13 +66,9 @@
             this.MainHandWeapon = null;
         }
 
-        //TODO
         public void EquipOffHand(IOffhand offhand)
         {
-            if (this.MainHandWeapon is OneHandedSword)
-            {
-                this.OffHand = offhand;
-            }
+            this.OffHand = offhand;
         }
 
         public void UnEquipOffHand()
@@ -78,7 +76,6 @@
             this.OffHand = null;
         }
 
-        //TODO
         public void EquipArmor(IArmor armor)
         {
             if (armor == null)
@@ -122,6 +119,17 @@
         public void UnEquipGloves()
         {
             this.Gloves = null;
+        }
+
+        public void ClearInventory()
+        {
+            this.Bag.Clear();
+            this.MainHandWeapon = null;
+            this.OffHand = null;
+            this.Boots = null;
+            this.BodyArmor = null;
+            this.Gloves = null;
+            this.Helmet = null;
         }
     }
 }

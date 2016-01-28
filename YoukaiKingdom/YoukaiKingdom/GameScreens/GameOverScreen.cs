@@ -8,6 +8,9 @@ namespace YoukaiKingdom.GameScreens
 {
     public class GameOverScreen: BaseGameScreen
     {
+        //to check if mouse has been pressed already
+        private MouseState lastMouseState;
+        private MouseState mouse;
         private Button goBackButton;
         private Button exitButton;
         //background
@@ -19,7 +22,7 @@ namespace YoukaiKingdom.GameScreens
         private Texture2D exitTextureRegular;
         private Texture2D exitTextureHover;
 
-        public GameOverScreen(MainGame MGame) : base(MGame)
+        public GameOverScreen(MainGame mGame) : base(mGame)
         {
         }
 
@@ -31,12 +34,12 @@ namespace YoukaiKingdom.GameScreens
 
             goBackButtonTexture = MGame.Content.Load<Texture2D>("Sprites/UI/UI_BackToMainMenu");
             goBackButtonTextureHover = MGame.Content.Load<Texture2D>("Sprites/UI/UI_BackToMainMenu_hover");
-            goBackButton = new Button(goBackButtonTexture, goBackButtonTextureHover, this.MGame.GraphicsDevice);
+            goBackButton = new Button(goBackButtonTexture, goBackButtonTextureHover);
             goBackButton.SetPosition(new Vector2(MGame.GraphicsDevice.Viewport.Width / 2
                 - goBackButtonTexture.Width / 2, 250)); 
             exitTextureRegular = MGame.Content.Load<Texture2D>("Sprites/UI/MainMenu_ExitButtonRegular");
             exitTextureHover = MGame.Content.Load<Texture2D>("Sprites/UI/MainMenu_ExitButtonHover");
-            exitButton = new Button(exitTextureRegular, exitTextureHover, this.MGame.GraphicsDevice);
+            exitButton = new Button(exitTextureRegular, exitTextureHover);
             exitButton.SetPosition(new Vector2(MGame.GraphicsDevice.Viewport.Width / 2 - exitTextureRegular.Width / 2, 300));
             mBackground.Load(MGame.GraphicsDevice, mainMenuBackground);
 
@@ -44,23 +47,28 @@ namespace YoukaiKingdom.GameScreens
 
         public override void Update(GameTime gameTime)
         {
-            if (MGame.gameStateScreen == GameState.GameOverState)
+            if (MGame.GameStateScreen == GameState.GameOverState)
             {
                 KeyboardState state = Keyboard.GetState();
-                MouseState mouse = Mouse.GetState();
-                goBackButton.Update(state, mouse);
-                exitButton.Update(state, mouse);
+                mouse = Mouse.GetState();
+                goBackButton.Update(state, mouse, 0, 0);
+                exitButton.Update(state, mouse, 0, 0);
 
-                if (goBackButton.isClicked)
+                if (goBackButton.IsClicked)
                 {
-                    MGame.gameStateScreen = GameState.StartMenuScreenState;
+                    if (mouse.LeftButton == ButtonState.Pressed &&
+                        lastMouseState.LeftButton == ButtonState.Released)
+                    {
+                        MGame.GameStateScreen = GameState.StartMenuScreenState;
+                    }
                 }
-
-                if (exitButton.isClicked)
+                if (exitButton.IsClicked)
                 {
                     MGame.Exit();
                 }
+                lastMouseState = mouse; 
             }
+            
         }
         public override void Draw(GameTime gameTime)
         {

@@ -8,8 +8,8 @@ namespace YoukaiKingdom.Logic.Models.Characters.NPCs
     {
         private const int DefaultHealth = 180;
         private const int DefaultMana = 50;
-        private const int DefaultDamage = 90;
-        private const int DefaultArmor = 70;
+        private const int DefaultDamage = 80;
+        private const int DefaultArmor = 30;
 
         private Timer hitTimer;
 
@@ -31,7 +31,7 @@ namespace YoukaiKingdom.Logic.Models.Characters.NPCs
             //added this so enemies don't hang around with partly depleted health
             this.Health = this.MaxHealth;
             this.Mana = this.MaxMana;
-
+            this.Level = level;
         }
 
         public override void Hit(Interfaces.ICharacter target)
